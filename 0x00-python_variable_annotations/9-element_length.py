@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Annotate  function’s parameters and return values with the appropriate types
+task 9 : Let's duck type an iterable object.
 """
 from typing import Iterable, List, Sequence, Tuple
 
 
-def element_length(lst: Sequence[Sequence]) -> List[Tuple[Sequence, int]]:
+def element_length(lst: Iterable[Sequence]) -> List[Tuple[Sequence, int]]:
     """
-    returns list of tuples containing length of each element and element itself
+    Return list of tuples of sequence and their lenght.
     """
     return [(i, len(i)) for i in lst]
