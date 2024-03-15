@@ -2,7 +2,7 @@
 """
 Annotate  function’s parameters and return values with the appropriate types
 """
-from typing import Sequence, Tuple, List
+from typing import Iterable, List, Sequence, Tuple
 
 
 def element_length(lst: Sequence[Sequence]) -> List[Tuple[Sequence, int]]:
