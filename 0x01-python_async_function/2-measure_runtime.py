@@ -2,7 +2,7 @@
 """
 measure time function with intergers n nd max delay
 """
-import random
+import time
 import asyncio
 
 
