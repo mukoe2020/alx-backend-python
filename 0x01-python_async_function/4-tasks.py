@@ -22,4 +22,3 @@ async def task_wait_n(n: int, max_delay: int) -> List[float]:
         *[task_wait_n(max_delay) for _ in range(n)]
     )
     return list_of_delays
-
