@@ -4,7 +4,7 @@ convert wait_n to new function task_wait_n
 task_wait_n is randomly being called
 """
 import asyncio
-from typing import List
+from typing import List,Callable
 
 task_wait_n = __import__('3-tasks').task_wait_random
 
