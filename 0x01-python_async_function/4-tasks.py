@@ -4,7 +4,7 @@ convert wait_n to new function task_wait_n
 task_wait_n is randomly being called
 """
 import asyncio
-from typing import List,Callable
+from typing import List, Callable
 
 task_wait_n = __import__('3-tasks').task_wait_random
 
@@ -18,5 +18,8 @@ async def task_wait_n(n: int, max_delay: int) -> List[float]:
     Returns:
         List[float]: [description]
     """
-    list_of_delays = [task_wait_n(max_delay) for _ in range(n)]
-    return [await delay for delay in asyncio.as_completed(list_of_delays)]
+    list_of_delays: list[float] = await asyncio.gather(
+        *[task_wait_n(max_delay) for _ in range(n)]
+    )
+    return list_of_delays
+
