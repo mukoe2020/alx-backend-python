@@ -4,6 +4,7 @@ write a coroutine thats takes no arguments
 """
 import random
 import asyncio
+from typing import Generator
 
 
 async def async_generator():-> Generator[None, None, None]:
