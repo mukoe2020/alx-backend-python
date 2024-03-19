@@ -8,7 +8,7 @@ import asyncio
 
 async def async_generator():
     """
-    it will loop 10 times
+    it will loop 10 time
     and yeild a random number between 0 and 10
     """
     for in range(10):
