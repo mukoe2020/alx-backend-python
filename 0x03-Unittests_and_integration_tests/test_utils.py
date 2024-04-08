@@ -1,93 +1,69 @@
 #!/usr/bin/env python3
+"""Tests for utils"""
 
-"""
-  Test case for nested maps in utils.py
-"""
 
 import unittest
-from parameterized import parameterized, parameterized_class
+from parameterized import parameterized
 from utils import access_nested_map, get_json, memoize
-from unittest.mock import Mock, patch
+from unittest.mock import patch, MagicMock
 
 
 class TestAccessNestedMap(unittest.TestCase):
-    """
-      Test class for nesteed maps
+    """class for testing the acess map function
+    inheriting from unittest.TestCase
     """
     @parameterized.expand([
-        ({"a": 1}, ("a"), 1),
-        ({"a": {"b": 2}}, ("a"), {"b": 2}),
+        ({"a": 1}, ("a",), 1),
+        ({"a": {"b": 2}}, ("a",), {"b": 2}),
         ({"a": {"b": 2}}, ("a", "b"), 2)
-        ])
-    def test_access_nested_map(self, nested_map, path, output):
-        """
-          Test method for nested maps
-        """
-        result = access_nested_map(nested_map, path)
-        self.assertEqual(result, output)
-    
+    ])
+    def test_access_nested_map(self, nested_map, path, expected):
+        """method for testing the access map function"""
+        self.assertEqual(access_nested_map(nested_map, path), expected)
+
     @parameterized.expand([
-        ({}, ("a",), KeyError),
-        ({"a": 1}, ("a", "b"), KeyError)
-        ])
-    def test_access_nested_map_exception(self, nested_map, path,
-                                         exception):
-        """
-          Checks for a keyword error
-        """
-        with self.assertRaises(exception):
-            access_nested_map(nested_map, path)
+        ({}, ("a",)),
+        ({"a": 1}, ("a", "b"))
+    ])
+    def test_access_nested_map_exception(self, nested_map, path):
+        """tests for incorrect inputs error"""
+        self.assertRaises(KeyError)
+
 
 class TestGetJson(unittest.TestCase):
-    """
-      Test class for json using a mock object and patch
-    """
+    """class for testing the get_json function"""
     @parameterized.expand([
         ("http://example.com", {"payload": True}),
         ("http://holberton.io", {"payload": False})
-        ])
-    def test_get_json(self, url, output):
-        """
-           Method that tests get_json
-        """
-        response_mock = Mock()
-        response_mock.json.return_value = output
-        with patch('requests.get', return_value=response_mock):
-            response = get_json(url)
-            self.assertEqual(response, output)
+    ])
+    @patch("utils.requests.get")
+    def test_get_json(self, test_url, test_payload, mock_requests):
+        """Method for testing the get_json function"""
+        response = MagicMock()
+        response.json.return_value = test_payload
+        mock_requests.return_value = response
+        self.assertEqual(get_json(test_url), test_payload)
 
 
 class TestMemoize(unittest.TestCase):
-    """
-      Test class for memoise using mock object
-    """
-    class TestClass:
-        def a_method(self):
-            """
-            returns output memoised
-            """
-            return 42
+    """class for testing the memoize function"""
+    def test_memoize(self):
+        """method for testing memoize"""
+        class TestClass:
+            def a_method(self):
+                return 42
 
-        @memoize
-        def a_property(self):
-            """
-            memoise function
-            """
-            return self.a_method()
-        def setUp(self):
-            self.test_class = self.TestClass()
-        def test_memoization(self):
-            with patch.object(self.test_class, 'a_method') as mock:
-                mock.return_value = 42
+            @memoize
+            def a_property(self):
+                return self.a_method()
 
-                input1 = self.test_class.a_property
-                input2 = self.test_class.a_property
+        instance = TestClass()
+        with patch.object(instance, "a_method") as mocked_a_method:
+            mocked_a_method.return_value = 42
 
-                self.assertEqual(input1, 42)
-                self.assertEqual(input2, 42)
+            first_result = instance.a_property
+            second_result = instance.a_property
 
-                mock.assert_called_once() 
-
-
-if __name__ == '__main__':
-    unittest.main()
+            mocked_a_method.assert_called_once()
+            self.assertEqual(first_result, 42)
+            self.assertEqual(second_result, 42)
